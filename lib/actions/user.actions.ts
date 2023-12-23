@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import User from "../models/user.model";
 import { connectToDB } from "../mongoose";
 import Thread from "../models/thread.model";
+import Community from "../models/community.model";
 import { FilterQuery, SortOrder } from "mongoose";
 
 interface params {
@@ -47,11 +48,10 @@ export const updateUser = async ({
 export const getUser = async (userId: string) => {
   try {
     connectToDB();
-    const user = await User.findOne({ id: userId });
-    // .populate({
-    //   path: "communities",
-    //   model: "Community",
-    // });
+    const user = await User.findOne({ id: userId }).populate({
+      path: "communities",
+      model: "Community",
+    });
     return user;
   } catch (err: any) {
     throw new Error(`Error getting user: ${err.message}`);
@@ -65,11 +65,11 @@ export const getUserPosts = async (userId: string) => {
       path: "threads",
       model: Thread,
       populate: [
-        // {
-        //   path: "community",
-        //   model: Community,
-        //   select: "name id image _id",
-        // },
+        {
+          path: "community",
+          model: Community,
+          select: "name id image _id",
+        },
         {
           path: "children",
           model: Thread,

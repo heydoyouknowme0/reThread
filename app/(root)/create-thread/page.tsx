@@ -7,11 +7,11 @@ const Page = async () => {
   const user = await currentUser();
 
   if (!user) return null;
+  console.log(user);
 
   const userInfo = await getUser(user.id);
-  console.log(userInfo);
 
-  if (userInfo?.onboarded) return redirect("/onboarding");
+  if (!userInfo?.onboarded) return redirect("/onboarding");
 
   return (
     <>
